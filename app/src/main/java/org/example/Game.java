@@ -7,25 +7,36 @@ public class Game {
     Scanner scanner = new Scanner(System.in);
     Board board = new Board();
 
-    public void game() {
+    public void game(int mode) {
 
         int moveCount = 0;
         String currentPlayer = "X";
         boolean gameOver = false;
+        ComputerPlayer computer = new ComputerPlayer();
 
         while (!gameOver) {
 
             board.printBoard();
 
-            System.out.println("Enter your move: ");
-            String input = scanner.nextLine();
+            int move;
 
-            if (!input.matches("\\d+")) {
-                System.out.println("That is not a valid move! Try again.");
-                continue;
+            if (mode == 2 && currentPlayer.equals("O")) {
+                move = computer.chooseMove(board, "O", "X", moveCount);
+                System.out.println("Computer chooses: " + move);
+            } else if (mode == 3 && currentPlayer.equals("X")) {
+                move = computer.chooseMove(board, "X", "O", moveCount);
+                System.out.println("Computer chooses: " + move);
+            } else {
+                System.out.println("Enter your move: ");
+                String input = scanner.nextLine();
+
+                if (!input.matches("\\d+")) {
+                    System.out.println("That is not a valid move! Try again.");
+                    continue;
+                }
+
+                move = Integer.parseInt(input);
             }
-
-            int move = Integer.parseInt(input);
 
             if (board.move(move, currentPlayer)) {
 

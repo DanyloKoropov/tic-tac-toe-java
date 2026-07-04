@@ -1,5 +1,8 @@
 package org.example;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 public class Board {
     private String[] board = {
             "1", "2", "3",
@@ -57,5 +60,59 @@ public class Board {
         }
 
         return false;
+    }
+
+    public boolean isEmpty(int position) {
+        if (position < 1 || position > 9) {
+            return false;
+        }
+
+        return !board[position - 1].equals("X")
+                && !board[position - 1].equals("O");
+    }
+
+    public String getCell(int position) {
+        return board[position-1];
+    }
+
+    public boolean isBoardEmpty() {
+        for (int i = 1; i <= 9; i++) {
+            if (!isEmpty(i)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public int findWinningMove(String player) {
+        for (int position = 1; position <= 9; position++) {
+            if (isEmpty(position)) {
+                board[position - 1] = player;
+
+                if (checkWinner(player)) {
+                    board[position - 1] = String.valueOf(position);
+                    return position;
+                }
+
+                board[position - 1] = String.valueOf(position);
+            }
+
+        }
+        return -1;
+    }
+
+    public int randomEmptySpot() {
+        ArrayList<Integer> emptySpots = new ArrayList<>();
+        Random random = new Random();
+
+        for (int i = 1; i <= board.length; i++) {
+            if (isEmpty(i)) {
+                emptySpots.add(i);
+            }
+        }
+
+        int index = random.nextInt(emptySpots.size());
+        return emptySpots.get(index);
     }
 }

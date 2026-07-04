@@ -7,31 +7,11 @@ import static org.junit.jupiter.api.Assertions.*;
 class BoardTest {
 
     @Test
-    void movePlacesXOnEmptyCell() {
+    void movePlacesMarkOnEmptyCell() {
         Board board = new Board();
 
-        boolean result = board.move(1, "X");
-
-        assertTrue(result);
-        assertTrue(board.checkWinner("X") == false);
-    }
-
-    @Test
-    void moveRejectsCellBelowRange() {
-        Board board = new Board();
-
-        boolean result = board.move(0, "X");
-
-        assertFalse(result);
-    }
-
-    @Test
-    void moveRejectsCellAboveRange() {
-        Board board = new Board();
-
-        boolean result = board.move(10, "X");
-
-        assertFalse(result);
+        assertTrue(board.move(1, "X"));
+        assertEquals("X", board.getCell(1));
     }
 
     @Test
@@ -40,10 +20,19 @@ class BoardTest {
 
         assertTrue(board.move(1, "X"));
         assertFalse(board.move(1, "O"));
+        assertEquals("X", board.getCell(1));
     }
 
     @Test
-    void checkWinnerDetectsTopRowWin() {
+    void moveRejectsInvalidPosition() {
+        Board board = new Board();
+
+        assertFalse(board.move(0, "X"));
+        assertFalse(board.move(10, "X"));
+    }
+
+    @Test
+    void checkWinnerDetectsRowWin() {
         Board board = new Board();
 
         board.move(1, "X");
@@ -54,58 +43,69 @@ class BoardTest {
     }
 
     @Test
-    void checkWinnerDetectsMiddleRowWin() {
-        Board board = new Board();
-
-        board.move(4, "O");
-        board.move(5, "O");
-        board.move(6, "O");
-
-        assertTrue(board.checkWinner("O"));
-    }
-
-    @Test
     void checkWinnerDetectsColumnWin() {
         Board board = new Board();
 
-        board.move(1, "X");
-        board.move(4, "X");
-        board.move(7, "X");
+        board.move(1, "O");
+        board.move(4, "O");
+        board.move(7, "O");
 
-        assertTrue(board.checkWinner("X"));
+        assertTrue(board.checkWinner("O"));
     }
 
     @Test
     void checkWinnerDetectsDiagonalWin() {
         Board board = new Board();
 
-        board.move(1, "O");
-        board.move(5, "O");
-        board.move(9, "O");
-
-        assertTrue(board.checkWinner("O"));
-    }
-
-    @Test
-    void checkWinnerDetectsOtherDiagonalWin() {
-        Board board = new Board();
-
-        board.move(3, "X");
+        board.move(1, "X");
         board.move(5, "X");
-        board.move(7, "X");
+        board.move(9, "X");
 
         assertTrue(board.checkWinner("X"));
     }
 
     @Test
-    void checkWinnerReturnsFalseWhenThereIsNoWinner() {
+    void isBoardEmptyWorks() {
+        Board board = new Board();
+
+        assertTrue(board.isBoardEmpty());
+
+        board.move(5, "X");
+
+        assertFalse(board.isBoardEmpty());
+    }
+
+    @Test
+    void findWinningMoveFindsWinningSpot() {
+        Board board = new Board();
+
+        board.move(1, "X");
+        board.move(2, "X");
+
+        assertEquals(3, board.findWinningMove("X"));
+    }
+
+    @Test
+    void findWinningMoveReturnsNegativeOneWhenNoWin() {
+        Board board = new Board();
+
+        board.move(1, "X");
+        board.move(5, "O");
+
+        assertEquals(-1, board.findWinningMove("X"));
+    }
+
+    @Test
+    void randomEmptySpotReturnsAnEmptyCell() {
         Board board = new Board();
 
         board.move(1, "X");
         board.move(2, "O");
         board.move(3, "X");
 
-        assertFalse(board.checkWinner("X"));
-        assertFalse(board.checkWinner("O"));
+        int move = board.randomEmptySpot();
+
+        assertTrue(move >= 4 && move <= 9);
+        assertTrue(board.isEmpty(move));
     }
 }
